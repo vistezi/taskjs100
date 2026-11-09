@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="studentReg.js"></script>
+    
+</head>
+<body>
+    <h2>Регистрация студента</h2>
+
+    <form id="studentForm">
+        <input id="name" placeholder="ФИО" required>
+        <input id="email" type="email"
+               placeholder="Email" required>
+        <input id="age" type="number"
+               placeholder="Возраст" min="14" max="100" required>
+
+        <button type="submit">Регистрация</button>
+    </form>
+
+    <p id="result"></p>
+</body>
+</html>
