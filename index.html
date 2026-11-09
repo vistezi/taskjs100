@@ -1,25 +1,364 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="studentReg.js"></script>
+    <title>Практические работы по JavaScript</title>
     
 </head>
 <body>
-    <h2>Регистрация студента</h2>
 
-    <form id="studentForm">
-        <input id="name" placeholder="ФИО" required>
-        <input id="email" type="email"
-               placeholder="Email" required>
-        <input id="age" type="number"
-               placeholder="Возраст" min="14" max="100" required>
+    <h1>Сборник практических работ</h1>
 
-        <button type="submit">Регистрация</button>
-    </form>
+        <h2>Практическая работа №1: Регистрация студента</h2>
+        <form id="studentForm">
+            <input id="s_name" placeholder="ФИО" required>
+            <input id="s_email" type="email" placeholder="Email" required>
+            <input id="s_age" type="number" placeholder="Возраст (14-100)" min="14" max="100" required>
+            <input id="s_group" placeholder="Учебная группа (например, РПО-24-2)" required>
+            <input id="s_phone" placeholder="Номер телефона (+7...)" required>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <p id="result1" class="result"></p>
+    </section>
 
-    <p id="result"></p>
+
+    <section>
+        <h2>Практическая работа №2: Калькулятор стоимости заказа</h2>
+        <form id="calcForm">
+            <input id="price" placeholder="Цена за единицу" type="number" required>
+            <input id="kolvo" placeholder="Количество товара" type="number" required>
+            <button type="submit">Рассчитать</button>
+        </form>
+        <p id="result2" class="result"></p>
+    </section>
+
+
+    <section>
+        <h2>Практическая работа №3: Проверка сложности пароля</h2>
+        <form id="passwordForm">
+            <input id="passwordInput" type="password" placeholder="Введите пароль">
+            <button type="button" id="togglePassword">Показать пароль</button>
+        </form>
+        <p id="result3" class="result">Сложность: <span id="passStrength">Пусто</span></p>
+    </section>
+
+
+
+   
+    <section>
+        <h2>Практическая работа №4: Выбор учебного курса</h2>
+        <select id="courseSelect">
+            <option value="">Выберите дисциплину</option>
+            <option value="js">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="html">HTML и CSS</option>
+            <option value="node">Node.js</option>
+        </select>
+        <p id="result4" class="result"></p>
+        <button id="enrollBtn" style="display:none;">Записаться на курс</button>
+    </section>
+
+
+    <section>
+        <h2>Практическая работа №5: Зависимые списки (Специальность -> Группа -> Студенты)</h2>
+        <label>Специальность:</label>
+        <select id="specSelect">
+            <option value="">Выберите специальность</option>
+            <option value="rpo">Программное обеспечение</option>
+            <option value="ib">Информационная безопасность</option>
+        </select>
+
+        <label>Учебная группа:</label>
+        <select id="groupSelect" disabled>
+            <option value="">Сначала выберите специальность</option>
+        </select>
+
+        <label>Студент:</label>
+        <select id="studentSelect" disabled>
+            <option value="">Сначала выберите группу</option>
+        </select>
+        <p id="result5" class="result"></p>
+    </section>
+
+  
+    <section>
+        <h2>Практическая работа №6: Фильтрация товаров</h2>
+        <label>Категория:</label>
+        <select id="categorySelect">
+            <option value="all">Все категории</option>
+            <option value="laptop">Ноутбуки</option>
+            <option value="phone">Телефоны</option>
+            <option value="tablet">Планшеты</option>
+        </select>
+        
+        <label>Сортировка по цене:</label>
+        <select id="sortSelect">
+            <option value="none">Без сортировки</option>
+            <option value="asc">По возрастанию</option>
+            <option value="desc">По убыванию</option>
+        </select>
+        
+        <div id="productCatalog" class="result" style="margin-top: 10px;"></div>
+    </section>
+
+    
+    <section>
+        <h2>Практическая работа №7: Секундомер (Формат MM:SS)</h2>
+        <p>Время: <span id="time" class="result" style="font-size: 1.2em;">00:00</span></p>
+        <button type="button" onclick="startTimer()">Старт</button>
+        <button type="button" onclick="stopTimer()">Стоп</button>
+        <button type="button" onclick="resetTimer()">Сброс</button>
+    </section>
+
+
+
+    <script>
+   
+        document.getElementById("studentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("s_name").value.trim();
+            const email = document.getElementById("s_email").value.trim();
+            const age = Number(document.getElementById("s_age").value);
+            const group = document.getElementById("s_group").value.trim();
+            const phone = document.getElementById("s_phone").value.trim();
+
+            // Простая проверка телефона (например, наличие цифр и плюса)
+            const phoneRegex = /^\+?[0-9]{10,12}$/;
+
+            if (!name || !email || age < 14 || age > 100 || !group || !phoneRegex.test(phone)) {
+                document.getElementById("result1").textContent = "Проверьте введённые данные (телефон должен содержать от 10 цифр)";
+                return;
+            }
+
+            document.getElementById("result1").textContent = `Студент ${name} зарегистрирован. Группа: ${group}, Тел: ${phone}`;
+        });
+
+  
+        function calculateTotal(price, quantity) {
+            let total = price * quantity;
+            // Самостоятельное задание: скидка 10% при покупке от 50 000 тенге
+            if (total >= 50000) {
+                total = total * 0.9;
+                return `Итого с учетом скидки 10%: ${total} тенге`;
+            }
+            return `Итого: ${total} тенге`;
+        }
+
+        document.getElementById("calcForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const price = Number(document.getElementById("price").value);
+            const kolvo = Number(document.getElementById("kolvo").value);
+
+            if (price < 0 || kolvo < 0) {
+                document.getElementById("result2").textContent = "Цена и количество не могут быть отрицательными!";
+                return;
+            }
+
+            document.getElementById("result2").textContent = calculateTotal(price, kolvo);
+        });
+
+    
+        const passInput = document.getElementById("passwordInput");
+        const toggleBtn = document.getElementById("togglePassword");
+
+        toggleBtn.addEventListener("click", function() {
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleBtn.textContent = "Скрыть пароль";
+            } else {
+                passInput.type = "password";
+                toggleBtn.textContent = "Показать пароль";
+            }
+        });
+
+        passInput.addEventListener("input", function() {
+            const val = passInput.value;
+            const strengthElem = document.getElementById("passStrength");
+            
+            const hasLength = val.length >= 8;
+            const hasLettersAndDigits = /[a-zA-Z]/.test(val) && /[0-9]/.test(val);
+            const hasSpecial = /[\!\@\#\$\%\^\&\*\(\)]/.test(val);
+
+            if (val.length === 0) {
+                strengthElem.textContent = "Пусто";
+                strengthElem.style.color = "black";
+            } else if (hasLength && hasLettersAndDigits && hasSpecial) {
+                strengthElem.textContent = "Надежный пароль";
+                strengthElem.style.color = "green";
+            } else if (hasLength && hasLettersAndDigits) {
+                strengthElem.textContent = "Средняя сложность";
+                strengthElem.style.color = "orange";
+            } else {
+                strengthElem.textContent = "Слабый пароль";
+                strengthElem.style.color = "red";
+            }
+        });
+
+
+        const courses = {
+            js: { name: "JavaScript — 72 часа", price: "45 000 тг" },
+            python: { name: "Python — 96 часов", price: "55 000 тг" },
+            html: { name: "HTML и CSS — 48 часов", price: "30 000 тг" },
+            node: { name: "Node.js — 60 часов", price: "50 000 тг" }
+        };
+
+        document.getElementById("courseSelect").addEventListener("change", function() {
+            const selected = this.value;
+            const resBlock = document.getElementById("result4");
+            const btn = document.getElementById("enrollBtn");
+
+            if (courses[selected]) {
+                resBlock.textContent = `${courses[selected].name}, Стоимость: ${courses[selected].price}`;
+                btn.style.display = "block";
+            } else {
+                resBlock.textContent = "Выберите курс из списка";
+                btn.style.display = "none";
+            }
+        });
+
+   
+        const groupsData = {
+            rpo: ["РПО-24-1", "РПО-24-2"],
+            ib: ["ИБ-24-1", "ИБ-24-2"]
+        };
+
+
+        const studentsData = {
+            "РПО-24-1": ["Алексей Иванов", "Анна Смирнова"],
+            "РПО-24-2": ["Иван Петров", "Елена Ким"],
+            "ИБ-24-1": ["Дмитрий Соколов", "Ольга Новикова"],
+            "ИБ-24-2": ["Максим Васильев", "София Морозова"]
+        };
+
+        const specSelect = document.getElementById("specSelect");
+        const groupSelect = document.getElementById("groupSelect");
+        const studentSelect = document.getElementById("studentSelect");
+
+        specSelect.addEventListener("change", function() {
+            const spec = this.value;
+            groupSelect.innerHTML = '<option value="">Выберите группу</option>';
+            studentSelect.innerHTML = '<option value="">Сначала выберите группу</option>';
+            studentSelect.disabled = true;
+
+            if (groupsData[spec]) {
+                groupSelect.disabled = false;
+                groupsData[spec].forEach(group => {
+                    const opt = document.createElement("option");
+                    opt.value = group;
+                    opt.textContent = group;
+                    groupSelect.appendChild(opt);
+                });
+            } else {
+                groupSelect.disabled = true;
+            }
+            document.getElementById("result5").textContent = "";
+        });
+
+        groupSelect.addEventListener("change", function() {
+            const group = this.value;
+            studentSelect.innerHTML = '<option value="">Выберите студента</option>';
+
+            if (studentsData[group]) {
+                studentSelect.disabled = false;
+                studentsData[group].forEach(student => {
+                    const opt = document.createElement("option");
+                    opt.value = student;
+                    opt.textContent = student;
+                    studentSelect.appendChild(opt);
+                });
+            } else {
+                studentSelect.disabled = true;
+            }
+            document.getElementById("result5").textContent = "";
+        });
+
+        studentSelect.addEventListener("change", function() {
+            const specText = specSelect.options[specSelect.selectedIndex].text;
+            const groupText = groupSelect.value;
+            const studentText = this.value;
+            if (studentText) {
+                document.getElementById("result5").textContent = `Студент: ${studentText} | Группа: ${groupText} | Специальность: ${specText}`;
+            }
+        });
+
+        // --- ПРАКТИЧЕСКАЯ РАБОТА №6 ---
+        const products = [
+            { name: "MacBook Pro", category: "laptop", price: 650000 },
+            { name: "Asus ZenBook", category: "laptop", price: 400000 },
+            { name: "HP Pavilion", category: "laptop", price: 300000 },
+            { name: "Lenovo ThinkPad", category: "laptop", price: 450000 },
+            { name: "Acer Aspire", category: "laptop", price: 250000 },
+            { name: "iPhone 15", category: "phone", price: 500000 },
+            { name: "Samsung Galaxy S24", category: "phone", price: 480000 },
+            { name: "Xiaomi 14", category: "phone", price: 350000 },
+            { name: "Google Pixel 8", category: "phone", price: 420000 },
+            { name: "OnePlus 12", category: "phone", price: 380000 },
+            { name: "iPad Pro", category: "tablet", price: 450000 },
+            { name: "Samsung Galaxy Tab", category: "tablet", price: 300000 },
+            { name: "Xiaomi Pad 6", category: "tablet", price: 180000 },
+            { name: "Lenovo Tab P11", category: "tablet", price: 150000 },
+            { name: "Huawei MatePad", category: "tablet", price: 170000 }
+        ];
+
+        function renderProducts() {
+            const category = document.getElementById("categorySelect").value;
+            const sort = document.getElementById("sortSelect").value;
+            const catalogDiv = document.getElementById("productCatalog");
+
+            let filtered = category === "all" ? [...products] : products.filter(p => p.category === category);
+
+            if (sort === "asc") {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (sort === "desc") {
+                filtered.sort((a, b) => b.price - a.price);
+            }
+
+            if (filtered.length === 0) {
+                catalogDiv.innerHTML = "Товары не найдены";
+                return;
+            }
+
+            let html = "<ul>";
+            filtered.forEach(p => {
+                html += `<li>${p.name} — ${p.price} тенге</li>`;
+            });
+            html += "</ul>";
+            catalogDiv.innerHTML = html;
+        }
+
+        document.getElementById("categorySelect").addEventListener("change", renderProducts);
+        document.getElementById("sortSelect").addEventListener("change", renderProducts);
+        renderProducts(); // Первичный вывод
+
+        
+        let seconds = 0;
+        let timer = null;
+
+        function startTimer() {
+            if (timer !== null) return;
+
+            timer = setInterval(() => {
+                seconds++;
+                let mins = Math.floor(seconds / 60);
+                let secs = seconds % 60;
+                
+                let formattedMins = mins < 10 ? "0" + mins : mins;
+                let formattedSecs = secs < 10 ? "0" + secs : secs;
+
+                document.getElementById("time").textContent = `${formattedMins}:${formattedSecs}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            seconds = 0;
+            document.getElementById("time").textContent = "00:00";
+        }
+    </script>
 </body>
 </html>
